@@ -204,3 +204,17 @@ print('We still miss:', len(participants16)-len(players))
 print('The dataset you are looking for is players. That is the one with all matching processes concatenated. The dictionary participants left tell us who is missing')
 
 
+### We define a function in which we import a list of fifa players missing id ["sofifa_id"]
+### and the players dataset we have found before
+def missing_players(missing_fifa_player_id, players_euro,):
+
+    for x in missing_fifa_player_id:
+        missing_player=fifa16[fifa16["sofifa_id"]==x]
+        players_euro=pd.concat([players, missing_player], ignore_index=True)
+
+    return players_euro
+
+list_of_id = [162240]
+final_dataset = missing_players(players,list_of_id)
+
+
