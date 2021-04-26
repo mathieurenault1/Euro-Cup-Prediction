@@ -1,10 +1,6 @@
 import pandas as pd
 import copy
 import re
-participants16=pd.read_csv('/Users/david/DataSets/international-uefa-euro-championship-players-2016-to-2016-stats.csv')
-fifa16=pd.read_csv('/Users/david/DataSets/players_16.csv')
-print(participants16.columns)
-print(fifa16.columns)
 
 
 def create_dob_column(participants):
@@ -35,7 +31,7 @@ def get_distinct_nationalities(participants):
     return nationalities
 
 
-def keep_euro_teams(fifa):
+def keep_euro_teams(fifa,nationalities):
     """Filter the fifa dataset so that we only keep the players of the nationalities we are interested about
      Args: fifa ---> The fifa dataset for a specifc year"""
     df=fifa[fifa['nationality'].isin(nationalities)]
@@ -185,36 +181,4 @@ def match_name_birthday(participants_left, fifa,participants):
     df = pd.concat(container, axis=1)
     df = df.transpose()
     return df, participants_left
-
-
-
-
-
-participants16=create_dob_column(participants16)
-nationalities=get_distinct_nationalities(participants16)
-fifa16=keep_euro_teams(fifa16)
-participants=create_participants_dictionary(participants16)
-international_players,participants_left=international_team_selection(fifa16,participants)
-df,participants_left=second_matching_name_and_surname_combo(fifa16,participants_left)
-participants_left_df=create_players_left_df(participants16,participants_left)
-df3,participants_left=match_name_birthday(participants_left,fifa16,participants16)
-all_players_selected=[international_players,df,df3]
-players=pd.concat(all_players_selected)
-print('We still miss:', len(participants16)-len(players))
-print('The dataset you are looking for is players. That is the one with all matching processes concatenated. The dictionary participants left tell us who is missing')
-
-
-### We define a function in which we import a list of fifa players missing id ["sofifa_id"]
-### and the players dataset we have found before
-def missing_players(missing_fifa_player_id, players_euro,):
-
-    for x in missing_fifa_player_id:
-        missing_player=fifa16[fifa16["sofifa_id"]==x]
-        players_euro=pd.concat([players, missing_player], ignore_index=True)
-
-    return players_euro
-
-list_of_id = [162240]
-final_dataset = missing_players(players,list_of_id)
-
 
