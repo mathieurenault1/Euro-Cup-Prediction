@@ -68,12 +68,12 @@ $ cd  Euro-Cup-Prediction
 
 
 ## Contact
-* David lobo <d.lobo@student.maastrichtuniversity.nl>
-* George  Fakas <g.fakas@student.maastrichtuniversity.nl>
-* Julie Loesch <j.loesch@student.maastrichtuniversity.nl>
-* Kim Roggenbuck <k.roggenbuck@student.maastrichtuniversity.nl>
-* Mathieu Renault <m.renault@student.maastrichtuniversity.nl>
-* Prakash Gupta <prakash.gupta@student.maastrichtuniversity.nl>
+* David lobo -  <d.lobo@student.maastrichtuniversity.nl>
+* George  Fakas - <g.fakas@student.maastrichtuniversity.nl>
+* Julie Loesch  - <j.loesch@student.maastrichtuniversity.nl>
+* Kim Roggenbuck - <k.roggenbuck@student.maastrichtuniversity.nl>
+* Mathieu Renault -  <m.renault@student.maastrichtuniversity.nl>
+* Prakash Gupta -  <prakash.gupta@student.maastrichtuniversity.nl>
 
 
 
