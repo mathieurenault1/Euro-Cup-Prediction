@@ -182,3 +182,19 @@ def match_name_birthday(participants_left, fifa,participants):
     df = df.transpose()
     return df, participants_left
 
+
+def create_results_euro(results):
+    """Create the results dataframe. DON'T FORGET TO READ THE FILE FIRST  results2016 = pd.read_csv('/Users/david/DataSets/Fifa/ResultsEuro2016.csv', sep=';')"""
+    if str(results) == 'results2016':
+        results = results.iloc[
+            -1, 4] = 1  # Needed to have a winner in 2016. They draw in the final and we need a winner
+    results['final_result'] = 0 * len(results)
+    for i in range(len(results)):
+        if results.loc[i, 'goal_h'] > results.loc[i, 'goal_a']:
+            results.loc[i, 'final_result'] = 0
+        elif results.loc[i, 'goal_h'] == results.loc[i, 'goal_a']:
+            results.loc[i, 'final_result'] = 1
+        else:
+            results.loc[i, 'final_result'] = 2
+
+    return results
