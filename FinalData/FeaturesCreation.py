@@ -1,7 +1,11 @@
 import pandas as pd
+import numpy as np
 
+"""This File is divided into 2 parts. The first one focuses on the creation of simple features having as output the teams dataframe stored in the Final
+Data folder as national_teams_2016. The second part focuses on the boxes approach which creates the output teams_boxes_2016"""
 """Make sure to change the path. The file should be the one with the filtered players"""
 players=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/finaldata16.csv')
+
 
 nationalities=[]
 for i in range(len(players)):
@@ -55,7 +59,106 @@ teams=create_columns(teams,columns)
 
 
 
+"""---------------------------------------------------------------------------------------------------------------------"""
 
+"""Here starts the section to create the box approach.  """
+
+
+
+
+def create_position_column(players):
+    """Creates the position for each player. IT MAKES use of the player_position function.
+    Args: IN : players , Out: player
+        """
+    players['player_position']=0*len(players)
+    goalkeepers = ['GK']
+    defenders = ['RB', 'CB', 'LB', 'RWB', 'LWB']
+    midfielders = ['CDM', 'CM', 'RM', 'LM' ]
+    attackers = ['CAM', 'RW', 'LW', 'CF', 'ST']
+    for i in range(len(players)):
+        positions_list = players.loc[i, 'preferred_positions']
+        positions_list = positions_list.replace('-', ' ')
+        positions_list = positions_list.split()
+        players.loc[i,'player_position']=player_positions(positions_list,goalkeepers,defenders,midfielders,attackers)
+
+    return players
+
+
+
+
+def player_positions(position_list,goalkeepers,defenders,midfielders,attackers):
+    """Solves the situation when one player can play in multiple positions. It basically takes into account all positions in
+    which a player can play and then based on the area of the field that those positions are decides which one is it most common
+    position. Don't use it separately of the create position column function"""
+    import operator
+    result={}
+    for position in position_list:
+        if position in defenders:
+            if 'defender' in result.keys():
+                result['defender'] +=1
+            else:
+                result.setdefault('defense',1)
+        elif position in midfielders:
+            if 'midfielder' in result.keys():
+                result['midfielder'] += 1
+            else:
+                result.setdefault('midfielder', 1)
+        elif position in attackers:
+            if 'attacker' in result.keys():
+                result['attacker'] += 1
+            else:
+                result.setdefault('attacker', 1)
+        elif position in goalkeepers:
+            if 'goalkeeper' in result.keys():
+                result['goalkeeper'] +=1
+            else:
+                result.setdefault('goalkeeper',1)
+
+    return max(result.items(), key=operator.itemgetter(1))[0]
+
+
+
+
+
+
+
+
+
+"""This is kinf of messy nut would work in case we want to change how the features are grouped"""
+
+columns_rating=['current_rating']
+columns_weight = ['weight']
+columns_height=['height']
+columns_ball_control = ['ball_control','vision','crossing','short_pass','long_pass','dribbling']
+columns_physical=['acceleration','sprint_speed','agility']
+columns_heading=['jumping','balance','heading']
+columns_defending=['marking','slide_tackle','stand_tackle','aggression','reactions','interceptions','composure','stamina','strength']
+columns_finishing=['att_position','shot_power','finishing','long_shots','curve','fk_acc','penalties']
+columns_goalkeeper=['gk_positioning', 'gk_diving', 'gk_handling', 'gk_kicking']
+columns_grouped=[(columns_rating,'rating'),(columns_weight,'weight'),(columns_height,'height'),(columns_heading,'heading'),(columns_ball_control,'ball_skills'),(columns_physical,'physical'),(columns_defending,'defending'),(columns_finishing,'finishing')]
+positions = ['defense','midfielder','attacker']
+
+
+
+def create_boxes(players):
+
+    df=pd.DataFrame()
+    for position in positions:
+        selected_players = players[players['player_position'] == position]
+        for column in columns_grouped:
+            result = selected_players.pivot_table(values=column[0], index=['nationality'], aggfunc=[np.mean])
+            df[str(position)+'_'+str(column[1])] = round(result.sum(axis=1) / result.shape[1]).astype('int')
+
+
+    goalkeepers = players[players['player_position'] == 'goalkeeper']
+    result = goalkeepers.pivot_table(values=['current_rating'], index=['nationality'], aggfunc=[np.max])
+    df['goalkeeper_rating'] = result.astype('int')
+    df['country'] = df.index
+    return df
+
+
+players=create_position_column(players)
+teams_boxes=create_boxes(players)
 
 
 
