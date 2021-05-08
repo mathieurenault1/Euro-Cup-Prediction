@@ -7,11 +7,25 @@ from DataAssembly import create_participants_dictionary
 
 
 """Make sure to change the path to the files"""
+
 """Note that this approach scales well and works for ANY year. To change the year simply change the files we are inputing.That is
 in the case we want to do for 2012 we would use fifa12 dataset and participants12 dataset """
 
+
 participants16=pd.read_csv('/Users/david/DataSets/international-uefa-euro-championship-players-2016-to-2016-stats.csv')
 fifa16=pd.read_csv('/Users/david/DataSets/Fifa/fifa16.csv',sep=';')
+
+
+
+
+"""Run in case we are working with 2012 file or we need to create birthday column. Obviously 
+if you run thsese lines the previous ones have no effect"""
+#import pandas as pd
+#participants16=pd.read_csv('/Users/david/DataSets/Fifa/players_2012.csv',sep=';')
+#participants16['dob'] = 0 * len(participants16)
+#for i in range(len(participants16)):
+    #participants16.loc[i, 'dob'] = participants16.loc[i, 'Date of birth (age)'][1:11]
+#fifa12=pd.read_csv('/Users/david/DataSets/Fifa/fifa12.csv',sep=';')
 
 
 
@@ -76,13 +90,14 @@ def create_dataset(participants,fifa):
 
 
 
-
-participants16=create_dob_column(participants16)
 nationalities=get_distinct_nationalities(participants16)
-players, original_participants, participants_left=create_dataset(participants16,fifa16)
+players, original_participants, participants_left=create_dataset(participants16,fifa12)
 print(participants_left)
 
 
+"""IF NAME ERROR REMEMBER THE CHEATING JUST CHANGE THE NAME OF THE DATAFRAME TO participants16"""
 
 """IT TAKES A WHILE !!!!! and forget about the warning. Players is the dataframe with the players that we matched and participants left is the dictionary with the players
 that we still need to include. We matched 458 but there are 95 missing"""
+
+

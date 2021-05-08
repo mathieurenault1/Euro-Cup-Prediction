@@ -141,6 +141,7 @@ positions = ['defense','midfielder','attacker']
 
 
 def create_boxes(players):
+    """Creates the final dataframe with the information according to the box approach"""
 
     df=pd.DataFrame()
     for position in positions:
@@ -159,6 +160,8 @@ def create_boxes(players):
 
 players=create_position_column(players)
 teams_boxes=create_boxes(players)
+
+
 
 
 
