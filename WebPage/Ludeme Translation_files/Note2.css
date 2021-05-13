@@ -1,0 +1,58 @@
+body {
+	margin: 2em;
+}
+
+/* Here we define how the title of the page should look like: */
+.title {
+	color: black;
+	background-color: #78a2ca;
+	text-align: center;
+}
+
+/* Here we define how the list of our names and this data should look like: */
+.titleData h2 {
+	font-size: 1.75rem;
+}
+.titleData ul {
+	/* list-style: inside; */
+	padding-left: 0;
+}
+
+/* Here we define how the chapters should look like: */
+.chapter {
+	margin-top: 1.5rem;
+}
+.chapterIntroduction h2 {
+	text-align: center; /* special case for the introduction chapter */
+}
+.chapter h2 {
+	font-size: 1.5rem;
+}
+.chapterIntroduction img {
+	max-width: 55rem;
+}
+.chapter img {
+	max-width: 36rem;
+}
+
+/* Here we define how our images and their description on the website should look like: */
+.image img {
+	border-radius: .25rem;
+	border-style:groove;
+	border-color:black;
+	display: block;
+	margin-top: 1.5rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+.image p {
+	text-align: center;
+}
+
+/* Here we define how our video should look like: */
+.video {
+	width:600px;
+	height:400px;
+	border-style:groove;
+	border-color:black;
+}
