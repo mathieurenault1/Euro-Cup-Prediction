@@ -83,37 +83,80 @@ def create_results(teams,results,box_approach=True):
     df['final_result'] = results['final_result']
 
     return df
-##
+
+
+
+def columns_substraction_method(df):
+    """Support function used in the substraction_method"""
+    columns=list(df)
+    columns.remove('home')
+    columns.remove('away')
+    columns.remove('phase')
+    columns.remove('final_result')
+    columns.remove('team_number')
+    columns.remove('team_number_2')
+    stop=int(len(columns)/2)
+    columns=columns[0:stop]
+    return columns
+
+def substraction_method(df):
+    """Creates the dataframe with the data according to the substraction method. Feed in the final dataframe
+    with the matches according to the concatenation method. """
+    df=df.fillna(0)
+    columns=columns_substraction_method(df)
+    new_df=pd.DataFrame()
+    new_df['home'] = df['home']
+    new_df['away'] = df['away']
+    new_df['phase'] = df['phase']
+    for i in columns:
+        new_df[i]=0*len(df)
+
+    for i in range(len(df)):
+        for j in columns:
+            new_df.loc[i,j]=int(df.loc[i,j]) - int(df.loc[i,j + '_2'])
+
+
+    return new_df
+
+
+
+
 
 """KEEP THIS AS IT IS. DON'T KNOW WHAT IS WRONG. WHENEVER YOU CALL IT WITH A DIFFERENT NAME THAN TEAMS AND RESULTS IT DOES NOT WORK """
 
 
 teams=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/team_boxes_2012.csv',sep=';')
-results=pd.read_csv('/Users/david/DataSets/Fifa/Results/Results2012_with_phase.csv',sep=';')
+results=pd.read_csv('/Users/david/DataSets/Fifa/Results/Results2012.csv',sep=';')
 df_2012=create_results(teams,results)
+df_2012_substraction=substraction_method(df_2012)
 teams=pd.read_csv('FinalData/teams_boxes_2016.csv')
 results=pd.read_csv('/Users/david/DataSets/Fifa/Results/Results2016_with_phase.csv',sep=';')
 df_2016=create_results(teams,results)
-##
+df_2016_substraction=substraction_method(df_2016)
+teams=pd.read_csv('/Users/david/DataSets/Fifa/team_boxes_WorldCup18.csv',sep=',')
+results=pd.read_csv('/Users/david/DataSets/Fifa/Results/ResultsWorldCup18.csv',sep=';')
+wc18=create_results(teams,results)
+wc18_substraction=substraction_method(wc18)
+all_matches=[df_2012,df_2016,wc18]
+all_matches_substraction=[df_2012_substraction,df_2016_substraction,wc18_substraction]
+df_concatenation=pd.concat(all_matches)
+df_substraction=pd.concat(all_matches_substraction)
+df_substraction['final_result']=df_concatenation['final_result']
 
-all_matches=[df_2012,df_2016]
-all_matches=pd.concat(all_matches)
 
-##
+
 
 """Modelling starts here"""
 
 
 
-x=all_matches
+x=df_substraction
 x=x.fillna(0)
 y=x['final_result']
 x=x.drop(['home','away','final_result'],axis=1)
 
 
-
-
-X_train,X_test,y_train,y_test=train_test_split(x,y,test_size=0.3,stratify=y,random_state=1)
+X_train,X_test,y_train,y_test=train_test_split(x,y,test_size=0.2,stratify=y,random_state=1)
 dt=DecisionTreeClassifier(random_state=1)
 dt.fit(X_train,y_train)
 y_pred=dt.predict(X_test)
