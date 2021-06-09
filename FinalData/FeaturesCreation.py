@@ -4,7 +4,8 @@ import numpy as np
 """This File is divided into 2 parts. The first one focuses on the creation of simple features having as output the teams dataframe stored in the Final
 Data folder as national_teams_2016. The second part focuses on the boxes approach which creates the output teams_boxes_2016"""
 """Make sure to change the path. The file should be the one with the filtered players"""
-players=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/finaldata16.csv')
+#players=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/finaldata16.csv')
+players=pd.read_csv('\\Users\\Admin\\Documents\\GitHub\\Euro-Cup-Prediction\\FinalData\\finaldata16.csv')
 
 
 nationalities=[]
@@ -16,7 +17,10 @@ for i in range(len(players)):
 """Create the dataframe and one row for each pf the teams"""
 teams=pd.DataFrame()
 teams['country'] = nationalities
-
+teamsSTD=pd.DataFrame()
+teamsSTD['country'] = nationalities
+teamsVAR=pd.DataFrame()
+teamsVAR['country'] = nationalities
 
 def keep_relevant_columns(players):
     """Removes the columns that have no info or are categorical. This should be improved in the future
@@ -52,12 +56,40 @@ def create_columns(teams,columns):
     return teams
 
 
+def create_columnsV(teamsVAR,columns):
+    """ Creates the variance for each feature for each team and adds it as new column"""
+    for i in columns:
+        teamsVAR[i] = 0 * len(teamsVAR)
+        for j in range(len(teamsVAR)):
+            nationals=players[players['nationality']==teamsVAR.loc[j,'country']]
+            nationals[i].fillna(nationals[i].var())
+            teamsVAR.loc[j,i]=nationals[i].var()
+    return teamsVAR
+
+def create_columnsS(teamsSTD,columns):
+    """ Creates the standard deviation for each feature for each team and adds it as new column"""
+    for i in columns:
+        teamsSTD[i] = 0 * len(teamsSTD)
+        for j in range(len(teamsSTD)):
+            nationals=players[players['nationality']==teamsSTD.loc[j,'country']]
+            nationals[i].fillna(nationals[i].std())
+            teamsSTD.loc[j,i]=nationals[i].std()
+    return teamsSTD
+
+
+
+
+
 """This is the data we will input to the model. We need to add more features that is columns but the structure must be 
 the same that is one row is one national team"""
 
 teams=create_columns(teams,columns)
+teamsVAR=create_columnsV(teamsVAR,columns)
+teamsSTD=create_columnsS(teamsSTD,columns)
 
-
+print(teams)
+print(teamsVAR)
+print(teamsSTD)
 
 """---------------------------------------------------------------------------------------------------------------------"""
 
@@ -160,9 +192,4 @@ def create_boxes(players):
 
 players=create_position_column(players)
 teams_boxes=create_boxes(players)
-
-
-
-
-
 
