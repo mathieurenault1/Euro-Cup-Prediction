@@ -143,7 +143,8 @@ df_concatenation=pd.concat(all_matches)
 df_substraction=pd.concat(all_matches_substraction)
 df_substraction['final_result']=df_concatenation['final_result']
 
-
+df_substraction=df_substraction.reset_index()
+df_substraction=df_substraction.drop(['index'],axis=1)
 
 
 """Modelling starts here"""
@@ -156,11 +157,62 @@ y=x['final_result']
 x=x.drop(['home','away','final_result'],axis=1)
 
 
-X_train,X_test,y_train,y_test=train_test_split(x,y,test_size=0.2,stratify=y,random_state=1)
+X_train,X_test,y_train,y_test=train_test_split(x,y,stratify=y,test_size=0.2,random_state=1)
+
 dt=DecisionTreeClassifier(random_state=1)
 dt.fit(X_train,y_train)
 y_pred=dt.predict(X_test)
 print(accuracy_score(y_test,y_pred))
+
+
+
+
+
+def intermediate_step(correct, errors):
+    """Creates a dataframe contianing the data for all the predicitons independely of if they are wrong"""
+    correct['correct'] = 1
+    errors['correct'] = 0 * len(errors)
+    all_matches = [errors, correct]
+    predictions_df = pd.concat(all_matches)
+
+    return predictions_df
+
+
+def split_results(df,prediction,label_test):
+    """Creates two dataframes, one containing the matches we predicted correctly and other containg just the errors"""
+    all_indices=label_test.index
+    errors=[]
+    errors_predicted=[]
+    correct=[]
+    correct_predicted=[]
+    counter=0
+    for i in label_test:
+        if i == prediction[counter]:
+            correct.append(all_indices[counter])
+            correct_predicted.append(prediction[counter])
+
+
+
+        else:
+            errors.append((all_indices[counter]))
+            errors_predicted.append(prediction[counter])
+
+        counter +=1
+
+    errors_df = df.iloc[errors]
+    correct_df = df.iloc[correct]
+    errors_df['predicted']=errors_predicted
+    correct_df['predicted']=correct_predicted
+
+
+    return correct_df, errors_df
+
+
+
+
+
+correct,errors=split_results(df_substraction,y_pred,y_test)
+predictions_df=intermediate_step(correct,errors)
 
 
 
