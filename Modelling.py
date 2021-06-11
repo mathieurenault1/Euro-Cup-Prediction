@@ -146,8 +146,22 @@ df_substraction['final_result']=df_concatenation['final_result']
 
 df_substraction=df_substraction.reset_index()
 df_substraction=df_substraction.drop(['index'],axis=1)
+##
+
+"""Data for 2021"""
+teams=pd.read_csv('FinalData/team_boxes_21.csv',sep=',')
+teams['nationality']=teams['country']
+results=pd.read_csv('FinalData/results2021.csv',sep=';')
+results.loc[12,'home']='Finland'
+df_2021=create_results(teams,results)
+df_2021_substraction=substraction_method(df_2021)
 
 
+
+
+
+
+##
 """Modelling starts here"""
 
 
@@ -226,4 +240,3 @@ print(table)
 
 ##
 
-globals().clear()

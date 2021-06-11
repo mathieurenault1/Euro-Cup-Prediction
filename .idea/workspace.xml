@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="adba033d-ee3a-4e29-9d95-7769b1505570" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FinalData/.ipynb_checkpoints/FeaturesCreation-checkpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FinalData/results2021.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FinalData/FeaturesCreation.py" beforeDir="false" afterPath="$PROJECT_DIR$/FinalData/FeaturesCreation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FinalData/ResultsEuro2016.numbers" beforeDir="false" afterPath="$PROJECT_DIR$/FinalData/ResultsEuro2016.numbers" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modelling.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modelling.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NewApproach.py" beforeDir="false" afterPath="$PROJECT_DIR$/NewApproach.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
