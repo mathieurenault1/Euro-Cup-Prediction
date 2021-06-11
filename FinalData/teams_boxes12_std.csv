@@ -1,0 +1,16 @@
+nationality,defense_rating,defense_weight,defense_height,defense_heading,defense_ball_skills,defense_physical,defense_defending,defense_finishing,midfielder_rating,midfielder_weight,midfielder_height,midfielder_heading,midfielder_ball_skills,midfielder_physical,midfielder_defending,midfielder_finishing,attacker_rating,attacker_weight,attacker_height,attacker_heading,attacker_ball_skills,attacker_physical,attacker_defending,attacker_finishing,goalkeeper_rating,country
+Croatia,4,10,6,9,7,10,7,12,5.0,7.0,6.0,10.0,8.0,10.0,13.0,11.0,2,10,5,3,7,7,10,6,3.0,Croatia
+Czech Republic,3,3,1,4,5,4,7,13,3.0,4.0,2.0,6.0,5.0,11.0,12.0,10.0,3,2,5,4,6,8,9,8,4.0,Czech Republic
+Denmark,7,6,4,14,9,8,8,16,3.0,4.0,2.0,9.0,6.0,9.0,14.0,8.0,2,6,9,9,5,6,11,7,3.0,Denmark
+England,3,9,7,8,8,10,7,14,3.0,2.0,3.0,9.0,5.0,9.0,13.0,6.0,5,6,7,12,10,9,15,12,9.0,England
+France,2,7,7,10,8,11,7,12,5.0,5.0,8.0,8.0,7.0,11.0,16.0,13.0,3,10,8,8,7,10,9,5,3.0,France
+Germany,4,10,9,11,11,15,9,14,3.0,4.0,3.0,9.0,6.0,11.0,16.0,10.0,2,7,3,8,6,8,7,7,4.0,Germany
+Greece,2,7,5,6,7,5,5,13,5.0,7.0,9.0,13.0,9.0,13.0,16.0,14.0,3,8,10,12,7,10,10,7,2.0,Greece
+Italy,3,6,5,7,11,9,8,13,2.0,5.0,4.0,10.0,6.0,13.0,7.0,7.0,4,11,9,9,6,9,14,6,2.0,Italy
+Netherlands,5,7,5,13,9,14,9,15,5.0,6.0,6.0,11.0,9.0,11.0,15.0,12.0,5,5,5,11,9,8,10,10,3.0,Netherlands
+Poland,6,7,2,15,11,11,10,14,3.0,6.0,6.0,11.0,7.0,11.0,14.0,11.0,4,4,5,8,8,9,9,10,6.0,Poland
+Portugal,5,6,7,11,9,6,8,16,5.0,4.0,3.0,8.0,6.0,9.0,12.0,9.0,8,7,4,10,12,22,9,11,3.0,Portugal
+Republic of Ireland,5,8,3,8,10,10,8,15,4.0,3.0,4.0,8.0,7.0,8.0,12.0,8.0,4,6,3,7,9,11,8,9,6.0,Republic of Ireland
+Russia,2,2,0,7,6,4,4,8,3.0,5.0,5.0,5.0,3.0,7.0,11.0,8.0,2,10,8,5,8,11,12,5,4.0,Russia
+Spain,5,7,10,13,8,13,7,10,4.0,5.0,9.0,11.0,8.0,8.0,15.0,10.0,2,14,11,12,9,8,9,7,9.0,Spain
+Sweden,3,4,5,13,8,12,7,13,3.0,6.0,6.0,13.0,8.0,12.0,9.0,14.0,6,9,7,9,9,10,10,10,1.0,Sweden

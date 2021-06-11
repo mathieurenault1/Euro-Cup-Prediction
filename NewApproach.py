@@ -17,7 +17,6 @@ fifa16=pd.read_csv('/Users/david/DataSets/Fifa/fifa16.csv',sep=';')
 
 
 
-
 """Run in case we are working with 2012 file or we need to create birthday column. Obviously 
 if you run thsese lines the previous ones have no effect"""
 #import pandas as pd
@@ -26,6 +25,7 @@ if you run thsese lines the previous ones have no effect"""
 #for i in range(len(participants16)):
     #participants16.loc[i, 'dob'] = participants16.loc[i, 'Date of birth (age)'][1:11]
 #fifa12=pd.read_csv('/Users/david/DataSets/Fifa/fifa12.csv',sep=';')
+
 
 
 
@@ -44,6 +44,57 @@ def modify_dob_participants(participants):
 
     return participants
 
+def create_dob_participants(participants):
+    """Used in case we have the birthdate with mixed numbers and strings. We will have to choose between using the
+    previous function modify_dob_participants or this one"""
+    participants['dob_modified'] = 0 * len(participants)
+    for i in range(len(participants)):
+        year = participants.loc[i, 'birthday'][-5:-1]
+        day = participants.loc[i, 'birthday'][0:2]
+        day_integer = int(day)
+        if day_integer < 10:
+            day = '0' + day[0]
+        month = check_month(i, participants)
+        participants.loc[i, 'dob_modified'] = day + '/' + month + '/' + year
+
+    return participants
+
+
+def check_month(i, participants):
+    """Used in the above function create_dob_participants """
+    date = participants.loc[i, 'birthday']
+    month = re.findall('\D', date)
+    final_month = []
+    for i in month:
+        if i != ' ':
+            final_month.append(i)
+    month = ''.join(final_month)
+    if month == 'January':
+        answer = '01'
+    elif month == 'February':
+        answer = '02'
+    elif month == 'March':
+        answer = '03'
+    elif month == 'April':
+        answer = '04'
+    elif month == 'May':
+        answer = '05'
+    elif month == 'June':
+        answer = '06'
+    elif month == 'July':
+        answer = '07'
+    elif month == 'August':
+        answer = '08'
+    elif month == 'September':
+        answer = '09'
+    elif month == 'October':
+        answer = '10'
+    elif month == 'November':
+        answer = '11'
+    elif month == 'December':
+        answer = '12'
+
+    return answer
 
 
 
@@ -78,7 +129,8 @@ def create_dataset(participants,fifa):
     Input --> participants dataframe and fifa dataset
     Out---> df (dataframe with selected players),original_dict(the dictionary that we had)
         participants_left(dicitionary with participants still to match)"""
-    participants_df=modify_dob_participants(participants)
+    #participants_df=modify_dob_participants(participants)  #In case we need to change the format of the birthday
+    participants = create_dob_participants(participants)
     original_participants=create_participants_dictionary(participants)
     df,participants_left=match(participants,fifa,original_participants)
     return df, original_participants, participants_left
@@ -91,7 +143,7 @@ def create_dataset(participants,fifa):
 
 
 nationalities=get_distinct_nationalities(participants16)
-players, original_participants, participants_left=create_dataset(participants16,fifa12)
+players, original_participants, participants_left=create_dataset(participants16,fifa16)
 print(participants_left)
 
 
@@ -99,5 +151,8 @@ print(participants_left)
 
 """IT TAKES A WHILE !!!!! and forget about the warning. Players is the dataframe with the players that we matched and participants left is the dictionary with the players
 that we still need to include. We matched 458 but there are 95 missing"""
+
+
+
 
 

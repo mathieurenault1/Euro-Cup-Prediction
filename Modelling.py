@@ -121,10 +121,11 @@ def substraction_method(df):
 
 
 
-
 """KEEP THIS AS IT IS. DON'T KNOW WHAT IS WRONG. WHENEVER YOU CALL IT WITH A DIFFERENT NAME THAN TEAMS AND RESULTS IT DOES NOT WORK """
 
 
+
+##
 teams=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/team_boxes_2012.csv',sep=';')
 results=pd.read_csv('/Users/david/DataSets/Fifa/Results/Results2012.csv',sep=';')
 df_2012=create_results(teams,results)
@@ -217,3 +218,12 @@ predictions_df=intermediate_step(correct,errors)
 
 
 
+##
+import numpy as np
+table=predictions_df.pivot_table(columns=['correct'],aggfunc=[np.mean,np.std])
+print(table)
+
+
+##
+
+globals().clear()

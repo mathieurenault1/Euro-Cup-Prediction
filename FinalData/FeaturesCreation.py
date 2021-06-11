@@ -4,8 +4,8 @@ import numpy as np
 """This File is divided into 2 parts. The first one focuses on the creation of simple features having as output the teams dataframe stored in the Final
 Data folder as national_teams_2016. The second part focuses on the boxes approach which creates the output teams_boxes_2016"""
 """Make sure to change the path. The file should be the one with the filtered players"""
-#players=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/finaldata16.csv')
-players=pd.read_csv('\\Users\\Admin\\Documents\\GitHub\\Euro-Cup-Prediction\\FinalData\\finaldata16.csv')
+players=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/finaldata16.csv')
+#players=pd.read_csv('\\Users\\Admin\\Documents\\GitHub\\Euro-Cup-Prediction\\FinalData\\finaldata16.csv')
 
 
 nationalities=[]
@@ -172,24 +172,56 @@ positions = ['defense','midfielder','attacker']
 
 
 
-def create_boxes(players):
-    """Creates the final dataframe with the information according to the box approach"""
+def create_boxes(players,std=False):
+    """Creates the final dataframe with the information according to the box approach. If std is False we would compute the mean
+    if STD is True we would compute the STD dev"""
 
     df=pd.DataFrame()
     for position in positions:
         selected_players = players[players['player_position'] == position]
         for column in columns_grouped:
-            result = selected_players.pivot_table(values=column[0], index=['nationality'], aggfunc=[np.mean])
-            df[str(position)+'_'+str(column[1])] = round(result.sum(axis=1) / result.shape[1]).astype('int')
+            if std==False:
+                result = selected_players.pivot_table(values=column[0], index=['nationality'], aggfunc=[np.mean])
+                df[str(position)+'_'+str(column[1])] = round(result.sum(axis=1) / result.shape[1]).astype('int')
+            else:
+                result = selected_players.pivot_table(values=column[0], index=['nationality'], aggfunc=[np.std])
+                df[str(position) + '_' + str(column[1])] = round(result.sum(axis=1) / result.shape[1]).astype('int')
+
 
 
     goalkeepers = players[players['player_position'] == 'goalkeeper']
-    result = goalkeepers.pivot_table(values=['current_rating'], index=['nationality'], aggfunc=[np.max])
-    df['goalkeeper_rating'] = result.astype('int')
+    if std==False:
+        result = goalkeepers.pivot_table(values=['current_rating'], index=['nationality'], aggfunc=[np.max])
+        df['goalkeeper_rating'] = result.astype('int')
+    else:
+        result = goalkeepers.pivot_table(values=['current_rating'], index=['nationality'], aggfunc=[np.std])
+        df['goalkeeper_rating'] = result.astype('int')
+
     df['country'] = df.index
     return df
 
 
+def ratio_dataframe(mean,std):
+    mean=mean.drop(['country'],axis=1)
+    std = std.drop(['country'], axis=1)
+    ratio_df=mean.div(std)
+    return ratio_df
+
+
 players=create_position_column(players)
-teams_boxes=create_boxes(players)
+teams_boxes=create_boxes(players,std=False)
+teams_boxes_std=create_boxes(players,std=True)
+teams_boxes=teams_boxes.fillna(np.mean(teams_boxes))
+teams_boxes_std=teams_boxes_std.fillna(np.max(teams_boxes_std))
+ratio_df=ratio_dataframe(teams_boxes,teams_boxes_std)
+
+
+
+"""Leaf this here as it migh be useful in the future. We will need it to produce the ratio probably for all tournaments """
+#players_WC18=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/players12.csv')
+#players_WC18=create_position_column(players_WC18)
+#teams_boxes_std_WC=create_boxes(players_WC18,std=True)
+#teams_boxes_std=teams_boxes_std_WC.fillna(np.max(teams_boxes_std_WC))
+
+
 
