@@ -108,10 +108,17 @@ def create_position_column(players):
     midfielders = ['CDM', 'CM', 'RM', 'LM' ]
     attackers = ['CAM', 'RW', 'LW', 'CF', 'ST']
     for i in range(len(players)):
-        positions_list = players.loc[i, 'preferred_positions']
-        positions_list = positions_list.replace('-', ' ')
-        positions_list = positions_list.split()
-        players.loc[i,'player_position']=player_positions(positions_list,goalkeepers,defenders,midfielders,attackers)
+
+
+            positions_list = players.loc[i, 'preferred_positions']
+            positions_list = positions_list.replace('-', ' ')
+            positions_list = positions_list.split()
+            try:
+                players.loc[i,'player_position']=player_positions(positions_list,goalkeepers,defenders,midfielders,attackers)
+
+            except KeyError:
+                players.loc[i, 'player_position']='Error'
+
 
     return players
 
@@ -207,7 +214,7 @@ def ratio_dataframe(mean,std):
     ratio_df=mean.div(std)
     return ratio_df
 
-
+##
 players=create_position_column(players)
 teams_boxes=create_boxes(players,std=False)
 teams_boxes_std=create_boxes(players,std=True)
@@ -225,3 +232,18 @@ ratio_df=ratio_dataframe(teams_boxes,teams_boxes_std)
 
 
 
+##
+
+players_21=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/Players_2021.csv',sep=';')
+players_21.loc[78,'preferred_positions']='CB'
+players_21.loc[308,'preferred_positions']='CB'
+
+##
+players_21=create_position_column(players_21)
+##
+teams_boxes_21=create_boxes(players_21,std=False)
+teams_boxes21_std=create_boxes(players_21,std=True)
+
+##
+teams_boxes_21.to_csv('FinalData/team_boxes_21.csv')
+teams_boxes21_std.to_csv('FinalData/team_boxes21_std.csv')
