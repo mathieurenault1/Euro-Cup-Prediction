@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 
 """This File is divided into 2 parts. The first one focuses on the creation of simple features having as output the teams dataframe stored in the Final
 Data folder as national_teams_2016. The second part focuses on the boxes approach which creates the output teams_boxes_2016"""
@@ -214,23 +215,18 @@ def ratio_dataframe(mean,std):
     ratio_df=mean.div(std)
     return ratio_df
 
-<<<<<<< HEAD
-##
-=======
-
 def confidence_interval_pos_dataframe(mean,std):
     mean=mean.drop(['country'],axis=1)
     std = std.drop(['country'], axis=1)
-    confidence_interval_pos=mean + 1.96 * std
+    confidence_interval_pos=mean + 1.96 * (std/math.sqrt(22))
     return confidence_interval_pos
 
 def confidence_interval_neg_dataframe(mean,std):
     mean=mean.drop(['country'],axis=1)
     std = std.drop(['country'], axis=1)
-    confidence_interval_neg=mean - 1.96 * std
+    confidence_interval_neg=mean - 1.96 * (std/math.sqrt(22))
     return confidence_interval_neg
 
->>>>>>> efb7e09696cbf59f4b38ffbb66dac43117415bbe
 players=create_position_column(players)
 teams_boxes=create_boxes(players,std=False)
 teams_boxes_std=create_boxes(players,std=True)
