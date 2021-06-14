@@ -146,6 +146,35 @@ df_substraction['final_result']=df_concatenation['final_result']
 
 df_substraction=df_substraction.reset_index()
 df_substraction=df_substraction.drop(['index'],axis=1)
+
+
+##
+"""Do it for the std"""
+
+teams=pd.read_csv('FinalData/teams_boxes12_std.csv',sep=',')
+teams['nationality']=teams['country']
+results=pd.read_csv('FinalData/Results2012.csv',sep=';')
+df_2012=create_results(teams,results)
+##
+df_2012_substraction=substraction_method(df_2012)
+teams=pd.read_csv('FinalData/teams_boxes16_std.csv',sep=',')
+teams['nationality']=teams['country']
+results=pd.read_csv('FinalData/team_boxes16_std.csv.csv',sep=';')
+df_2016=create_results(teams,results)
+df_2016_substraction=substraction_method(df_2016)
+teams=pd.read_csv('FinalData/teams_boxesWC18_std.csv',sep=',')
+teams['nationality']=teams['country']
+results=pd.read_csv('FinalData/ResultsWorldCup18.csv',sep=';')
+wc18=create_results(teams,results)
+wc18_substraction=substraction_method(wc18)
+all_matches=[df_2012,df_2016,wc18]
+all_matches_substraction=[df_2012_substraction,df_2016_substraction,wc18_substraction]
+df_concatenation=pd.concat(all_matches)
+df_substraction_std=pd.concat(all_matches_substraction)
+df_substraction_std['final_result']=df_concatenation['final_result']
+
+df_substraction=df_substraction.reset_index()
+df_substraction=df_substraction.drop(['index'],axis=1)
 ##
 
 """Data for 2021"""
@@ -153,12 +182,8 @@ teams=pd.read_csv('FinalData/team_boxes_21.csv',sep=',')
 teams['nationality']=teams['country']
 results=pd.read_csv('FinalData/results2021.csv',sep=';')
 results.loc[12,'home']='Finland'
-df_2021=create_results(teams,results)
-df_2021_substraction=substraction_method(df_2021)
-
-
-
-
+df_2021_std=create_results(teams,results)
+df_2021_substraction_std=substraction_method(df_2021_std)
 
 
 ##
@@ -166,7 +191,7 @@ df_2021_substraction=substraction_method(df_2021)
 
 
 
-x=df_substraction
+x=train_data
 x=x.fillna(0)
 y=x['final_result']
 x=x.drop(['home','away','final_result'],axis=1)
@@ -174,12 +199,34 @@ x=x.drop(['home','away','final_result'],axis=1)
 
 X_train,X_test,y_train,y_test=train_test_split(x,y,stratify=y,test_size=0.2,random_state=1)
 
+
+
+##
+"""Now that we have the data for 2021 the training data are all previous matches and the testing data are the 2021"""
+x=df_substraction
+x=x.fillna(0)
+y_train=x['final_result']
+X_train=x.drop(['home','away','final_result'],axis=1)
+X_test=df_2021_substraction.drop(['home','away'],axis=1)
+
+##
 dt=DecisionTreeClassifier(random_state=1)
 dt.fit(X_train,y_train)
 y_pred=dt.predict(X_test)
-print(accuracy_score(y_test,y_pred))
+##
+from sklearn.naive_bayes import GaussianNB
+NB=GaussianNB()
+NB.fit(X_train, y_train)
+y_pred_proba=NB.predict_proba(X_test)
+y_pred_NB=NB.predict(X_test)
 
+##
+df_2021_substraction['predicted']=y_pred
+pciture_df=df_2021_substraction[['home','away','predicted']]
+##
+print(pciture_df)
 
+##
 
 
 
@@ -238,5 +285,5 @@ table=predictions_df.pivot_table(columns=['correct'],aggfunc=[np.mean,np.std])
 print(table)
 
 
-##
+
 

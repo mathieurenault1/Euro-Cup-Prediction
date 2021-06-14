@@ -214,9 +214,8 @@ def ratio_dataframe(mean,std):
     ratio_df=mean.div(std)
     return ratio_df
 
-<<<<<<< HEAD
 ##
-=======
+
 
 def confidence_interval_pos_dataframe(mean,std):
     mean=mean.drop(['country'],axis=1)
@@ -230,7 +229,6 @@ def confidence_interval_neg_dataframe(mean,std):
     confidence_interval_neg=mean - 1.96 * std
     return confidence_interval_neg
 
->>>>>>> efb7e09696cbf59f4b38ffbb66dac43117415bbe
 players=create_position_column(players)
 teams_boxes=create_boxes(players,std=False)
 teams_boxes_std=create_boxes(players,std=True)
