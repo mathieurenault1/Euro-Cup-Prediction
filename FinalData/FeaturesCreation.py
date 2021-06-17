@@ -215,12 +215,10 @@ def ratio_dataframe(mean,std):
     ratio_df=mean.div(std)
     return ratio_df
 
-<<<<<<< HEAD
 ##
 
 
-=======
->>>>>>> 4eedec9137b0a9292a4769dcb901bcd43b5e6e27
+
 def confidence_interval_pos_dataframe(mean,std):
     mean=mean.drop(['country'],axis=1)
     std = std.drop(['country'], axis=1)
@@ -242,12 +240,15 @@ ratio_df=ratio_dataframe(teams_boxes,teams_boxes_std)
 confidence_interval_pos_df=confidence_interval_pos_dataframe(teams_boxes,teams_boxes_std)
 confidence_interval_neg_df=confidence_interval_neg_dataframe(teams_boxes,teams_boxes_std)
 
+##
 """Leaf this here as it migh be useful in the future. We will need it to produce the ratio probably for all tournaments """
-#players_WC18=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/players12.csv')
-#players_WC18=create_position_column(players_WC18)
-#teams_boxes_std_WC=create_boxes(players_WC18,std=True)
-#teams_boxes_std=teams_boxes_std_WC.fillna(np.max(teams_boxes_std_WC))
-
+players_WC18=pd.read_csv('/Users/david/DataSets/Fifa/FinalData/players12.csv')
+players_WC18=create_position_column(players_WC18)
+teams_boxes_WC=create_boxes(players_WC18,std=False)
+teams_boxes_std_WC=create_boxes(players_WC18,std=True)
+teams_boxes_std_WC=teams_boxes_std_WC.fillna(np.max(teams_boxes_std_WC))
+confidence_interval_neg_df=confidence_interval_neg_dataframe(teams_boxes_WC,teams_boxes_std_WC)
+confidence_interval_neg_df.to_csv('FinalData/WC18_intervals.csv')
 
 
 ##
@@ -261,6 +262,7 @@ players_21=create_position_column(players_21)
 ##
 teams_boxes_21=create_boxes(players_21,std=False)
 teams_boxes21_std=create_boxes(players_21,std=True)
+confidence_interval_neg_df=confidence_interval_neg_dataframe(teams_boxes_21,teams_boxes_std)
 
 ##
 teams_boxes_21.to_csv('FinalData/team_boxes_21.csv')
