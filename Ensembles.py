@@ -173,9 +173,17 @@ model_rf_1,prediction_rf_final,prediciton_rf_prob_final=train_model_gridsearch(R
 
 parameters_2={'n_estimators':[200],'max_depth':[2,3],'learning_rate':[0.05,0.1],'subsample':[0.3,0.2,0.5,0.8],'max_features':[0.2,0.3,0.6]}
 from sklearn.ensemble import GradientBoostingClassifier
-model_gb,prediction_gb,prediciton_gb_prob=train_model_gridsearch(GradientBoostingClassifier(),parameters_2,X_train,y_train,X_validation,y_validation,X_test,True,4)
+model_gb7,prediction_gb,prediciton_gb_prob=train_model_gridsearch(GradientBoostingClassifier(),parameters_2,X_train,y_train,X_validation,y_validation,X_test,True,7)
+model_gb2,prediction_gb,prediciton_gb_prob=train_model_gridsearch(GradientBoostingClassifier(),parameters_2,X_train,y_train,X_validation,y_validation,X_test,True,2)
 model_gb1=train_model_gridsearch(GradientBoostingClassifier(),parameters_2,X_train,y_train,X_validation,y_validation,X_test,True,1)
-
+##
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+dt_ada=DecisionTreeClassifier(max_depth=2)
+parameters_3={'base_estimator':[dt_ada],'n_estimators':[200]}
+ada7,prediction_gb,prediciton_gb_prob=train_model_gridsearch(AdaBoostClassifier(),parameters_3,X_train,y_train,X_validation,y_validation,X_test,True,7)
+ada2,prediction_gb,prediciton_gb_prob=train_model_gridsearch(AdaBoostClassifier(),parameters_3,X_train,y_train,X_validation,y_validation,X_test,True,2)
+ada1,prediction_gb,prediciton_gb_prob=train_model_gridsearch(AdaBoostClassifier(),parameters_3,X_train,y_train,X_validation,y_validation,X_test,True,1)
 
 
 
@@ -354,39 +362,50 @@ def play_final(final,teams,model,components,probabilistic):
 def draw_a_ball(contenets,allowed_groups,already_drawn):
     import random
     available_rivals=[]
+    #print('-------New draw--------')
     for team in contenets:
-        if team[2] in allowed_groups and team[0] not in already_drawn:
-            available_rivals.append(team)
-    number=random.randint(0,len(available_rivals)-1)
-    chosen_rival=available_rivals[number][0]
+        if team[2] in allowed_groups:
+            if team[0] not in already_drawn:
+                available_rivals.append(team)
+    #print(available_rivals)
+    if len(available_rivals) >1:
+        number=random.randint(0,len(available_rivals)-1)
+        #print('Chosen number:',number)
+    else:
+        number=0
+
+    try:
+        chosen_rival=available_rivals[number][0]
+    except IndexError:
+        chosen_rival=contenets[0][0]
+    #print('Chosen_rival',chosen_rival)
     already_drawn.append(chosen_rival)
-    print(chosen_rival)
-    #while (contenets[number][2] not in allowed_groups and contenets[number][0] in already_drawn):
-        #number = random.randint(0, len(contenets) - 1)
-    #already_drawn.append(contenets[number][0])
-    return chosen_rival
+    #print('Balls already drawn:',already_drawn)
+
+    return chosen_rival,already_drawn
 
 
 
 
 def create_fixtures_round_of_16(group1,group2,group3,group4,group5,group6,thirds):
+    #print('New phase of 16')
     drawn_balls=[]
     match1=(group1[1][0],group2[1][0])
     match2 = (group1[0][0], group3[1][0])
-    third_team1=draw_a_ball(thirds,['D','E','F'],drawn_balls)
+    third_team1,drawn_balls=draw_a_ball(thirds,['D','E','F'],drawn_balls)
     match3 = (group3[0][0], third_team1)
-    third_team2=draw_a_ball(thirds,['A','D','E','F'],drawn_balls)
+    third_team2,drawn_balls=draw_a_ball(thirds,['A','D','E','F'],drawn_balls)
     match4= (group2[0][0],third_team2)
     match5= (group4[1][0],group5[1][0])
-    third_team3=draw_a_ball(thirds,['A','B','C'],drawn_balls)
+    third_team3,drawn_balls=draw_a_ball(thirds,['A','B','C'],drawn_balls)
     match6= (group6[0][0],third_team3)
     match7= (group4[0][0],group6[1][0])
-    third_team4= draw_a_ball(thirds,['A','B','C','D'],drawn_balls)
+    third_team4,drawn_balls= draw_a_ball(thirds,['A','B','C','D','E','F'],drawn_balls)
     match8= (group5[0][0],third_team4)
     all_matches=[match1,match2,match3,match4,match5,match6,match7,match8]
     counter=1
     for match in all_matches:
-        print('Match {}: {}'.format(counter,match))
+        #print('Match {}: {}'.format(counter,match))
         counter+=1
     return all_matches
 
@@ -439,6 +458,7 @@ def play_EURO2021(test_data,model1,model2,model3,probabilistic):
        Model 2 must be trained with 2 components (other numbers can be used but it must be less than 4)
        Model 3 must be trained with 1 component
     """
+
     countries_and_points = create_countries_and_points_df(test_data)
     countries_and_points, g_results = group_phase(test_data, X_test, countries_and_points, model1, 7,probabilistic)
     GroupA, GroupB, GroupC, GroupD, GroupE, GroupF, thirds = create_groups_sorted(countries_and_points)
@@ -447,6 +467,22 @@ def play_EURO2021(test_data,model1,model2,model3,probabilistic):
     fake_final_match = phase_4(fake_semifinal_matches, teams_boxes21, model2, 2,probabilistic)
     glorious_champion = play_final(fake_final_match, teams_boxes21, model3, 1,probabilistic)
     return glorious_champion
+
+
+
+def run_simulation(teams_boxes,test_data,model1,model2,model3,probabilistic,n):
+    import random
+    countries=list(teams_boxes['nationality'])
+    ranking={i:0 for i in countries}
+    counter=0
+    for i in range(n):
+        winner=play_EURO2021(test_data,model1,model2,model3,probabilistic)
+        ranking[winner] += 1
+        counter +=1
+        print(counter)
+    return ranking
+
+
 
 ##
 import random
@@ -463,23 +499,12 @@ champion_2=play_EURO2021(test_data,model_rf,model_rf_2,model_rf_1,False)
 ##
 champion_3=play_EURO2021(test_data,model_rf,model_rf_2,model_rf_1,True)
 ##
-
-from sklearn.decomposition import PCA
-pca=PCA(n_components=7)
-test_transformed=pca.fit_transform(test_data.drop(['home','away'],axis=1))
+import random
+results=run_simulation(teams_boxes21,test_data,model_rf,model_rf_2,model_rf_1,True,10)
+print(results)
 ##
-fake_result=model_rf.predict_proba(test_transformed[0].reshape(1,-1))
+results2=run_simulation(teams_boxes21,test_data,model_rf,model_rf_2,model_rf_1,False,1000)
+print(results2)
 ##
-r1=fake_result[0][0]
-r2=fake_result[0][1]
-for _ in range(10):
-    number=random.uniform(0,1)
-    print(number)
-    print('Result')
-    if number <= r1:
-        print(0,number,'<',r1)
-    elif r1 < number <= r1 +r2:
-        print(1,r1,number,r1+r2)
-
-    else:
-        print(2)
+results3=run_simulation(teams_boxes21,test_data,ada7,ada2,ada1,False,10)
+print(results3)
